@@ -1,14 +1,14 @@
 from fastapi import FastAPI
-import schemas
-
-import uvicorn
+import models
+from database import engine
+import routers.blog as blog
+import routers.user as user
+import routers.authentication as authentication
 
 app = FastAPI()
 
-@app.post('/blog')
-def create(request:schemas.Blog):
-    return request
+models.Base.metadata.create_all(engine)
 
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8080)
+app.include_router(authentication.router)
+app.include_router(blog.router)
+app.include_router(user.router)
